@@ -8,6 +8,21 @@ const ANIMALS = [
   ["elephant", "#9bf6ff"], ["lion", "#a0c4ff"], ["owl", "#ffd6a5"],
 ];
 
+// Each color: name, tile color, and something of that color shown on the second tap
+const COLORS = [
+  ["red",    "#e63946", "apple"],
+  ["orange", "#f77f00", "carrot"],
+  ["yellow", "#ffd60a", "banana"],
+  ["green",  "#2a9d4b", "frog"],
+  ["blue",   "#1e6fd9", "whale"],
+  ["purple", "#8e44ad", "grapes"],
+  ["pink",   "#ff8fc7", "flower"],
+  ["brown",  "#8b5a2b", "bear"],
+  ["black",  "#222222", "cat", "black-cat"],
+  ["white",  "#ffffff", "cloud"],
+  ["gray",   "#9aa0a6", "elephant"],
+];
+
 // ---------- Speech ----------
 let voice = null;
 
@@ -61,47 +76,67 @@ function playSound(name) {
   a.play().catch(() => {});
 }
 
-// ---------- Animals screen ----------
-const grid = document.getElementById("animal-grid");
+// ---------- Tiles (shared by all games) ----------
 let lastTapped = null;
 let tapCount = 0;
 
 function capitalize(s) { return s[0].toUpperCase() + s.slice(1); }
 
-ANIMALS.forEach(([name, color]) => {
+// Odd taps call first(), even taps call second(); tapping a different tile starts over
+function makeTile(grid, { id, color, html, label, first, second }) {
   const btn = document.createElement("button");
-  btn.className = "animal";
+  btn.className = "tile";
   btn.style.setProperty("--tile", color);
-  btn.setAttribute("aria-label", name);
-  btn.innerHTML = `<img src="images/${name}.svg" alt=""><span class="label">${capitalize(name)}</span>`;
-  btn.addEventListener("click", () => onAnimalTap(btn, name));
+  btn.setAttribute("aria-label", label);
+  btn.innerHTML = `${html}<span class="label">${capitalize(label)}</span>`;
+  btn.addEventListener("click", () => {
+    if (lastTapped !== id) { lastTapped = id; tapCount = 0; }
+    tapCount++;
+
+    if (navigator.vibrate) navigator.vibrate(30);
+
+    // Restart the animation even on rapid repeat taps
+    btn.classList.remove("bounce", "wiggle");
+    void btn.offsetWidth;
+
+    if (tapCount % 2 === 1) {
+      btn.classList.add("bounce", "named");
+      first(btn);
+    } else {
+      btn.classList.add("wiggle");
+      second(btn);
+    }
+  });
   grid.appendChild(btn);
+}
+
+// ---------- Animals: name, then animal sound ----------
+const animalGrid = document.getElementById("animal-grid");
+
+ANIMALS.forEach(([name, color]) => {
+  makeTile(animalGrid, {
+    id: "animal-" + name,
+    color,
+    label: name,
+    html: `<img src="images/${name}.svg" alt="">`,
+    first: () => { stopAll(); say(name); getSound(name); },
+    second: () => playSound(name),
+  });
 });
 
-function onAnimalTap(btn, name) {
-  if (lastTapped !== name) { lastTapped = name; tapCount = 0; }
-  tapCount++;
+// ---------- Colors: color name, then a thing of that color ----------
+const colorGrid = document.getElementById("color-grid");
 
-  if (navigator.vibrate) navigator.vibrate(30);
-
-  // Restart the animation even on rapid repeat taps
-  btn.classList.remove("bounce", "wiggle");
-  void btn.offsetWidth;
-
-  if (tapCount % 2 === 1) {
-    // Odd taps: say the name
-    btn.classList.add("bounce", "named");
-    stopAll();
-    say(name);
-  } else {
-    // Even taps: make the animal's sound
-    btn.classList.add("wiggle");
-    playSound(name);
-  }
-
-  // Start downloading this animal's sound so it's ready for the next tap
-  getSound(name);
-}
+COLORS.forEach(([name, color, thing, image = thing]) => {
+  makeTile(colorGrid, {
+    id: "color-" + name,
+    color,
+    label: name,
+    html: `<span class="thing"><img src="images/${image}.svg" alt=""></span>`,
+    first: btn => { btn.classList.remove("show-thing"); stopAll(); say(name); },
+    second: btn => { btn.classList.add("show-thing"); stopAll(); say(`${name} ${thing}`); },
+  });
+});
 
 // ---------- Routing (hash-based so the phone's back button works) ----------
 function route() {
@@ -109,7 +144,7 @@ function route() {
   document.querySelectorAll(".screen").forEach(s => { s.hidden = s.id !== screen; });
   stopAll();
   lastTapped = null;
-  document.querySelectorAll(".animal.named").forEach(b => b.classList.remove("named"));
+  document.querySelectorAll(".tile").forEach(b => b.classList.remove("named", "show-thing"));
   window.scrollTo(0, 0);
 }
 

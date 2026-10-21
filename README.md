@@ -6,6 +6,7 @@ There's no build step: it's plain HTML, CSS and JavaScript.
 ## Games
 
 - **Animals**: scroll through farm and zoo animals. Tap an animal once to hear its name, and tap it again to hear the sound it makes.
+- **Colors**: big color tiles. Tap a tile once to hear the color name. Tap it again to see something of that color and hear it named, such as "red apple" or "blue whale".
 
 ## Run locally
 
