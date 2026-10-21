@@ -176,18 +176,17 @@ footer a { color: var(--text); opacity: 0.5; font-size: 0.9rem; }
 }
 
 /* ---------- Colors ---------- */
-.game-pics.swatches { background: #fff7e0; }
-.swatches span { aspect-ratio: 1; border-radius: 50%; }
+.game-pics .swatch { aspect-ratio: 1; border-radius: 50%; }
 
 .colors .tile { border: 4px solid rgba(61, 51, 85, 0.12); }
 .colors .tile.bounce { animation: bounce 0.5s ease; }
 
 /* The thing of that color pops up on a white plate on the second tap */
 .thing {
+  position: absolute;
+  inset: 10%;
   display: grid;
   place-items: center;
-  width: 100%;
-  height: 100%;
   padding: 14%;
   border-radius: 50%;
   background: #fff;
@@ -209,7 +208,7 @@ footer a { color: var(--text); opacity: 0.5; font-size: 0.9rem; }
 .tile[aria-label="white"] .thing { background: #9bf6ff; }
 
 /* ---------- Numbers ---------- */
-.numerals span {
+.numeral-chip {
   display: grid;
   place-items: center;
   aspect-ratio: 1;
@@ -217,7 +216,6 @@ footer a { color: var(--text); opacity: 0.5; font-size: 0.9rem; }
   font-size: clamp(2.5rem, 12vw, 4rem);
   font-weight: bold;
 }
-.game-pics.numerals { background: #fff7e0; }
 
 .numbers .tile.bounce { animation: bounce 0.5s ease; }
 .numbers .tile img { animation: none !important; }
@@ -249,3 +247,20 @@ footer a { color: var(--text); opacity: 0.5; font-size: 0.9rem; }
 
 .tile.counting .numeral { display: none; }
 .tile.counting .things { display: flex; }
+
+/* ---------- Shapes ---------- */
+.game-pics svg { width: 100%; aspect-ratio: 1; }
+.shape { width: 100%; height: 100%; transition: opacity 0.2s; }
+.show-thing .shape { opacity: 0; }
+.shapes .tile.bounce { animation: bounce 0.5s ease; }
+.shapes .thing { background: #fff7e0; }
+
+/* ---------- Food: the second tap takes a bite out of the top-right corner ---------- */
+.tile.bitten img {
+  -webkit-mask-image: radial-gradient(circle at 90% 10%, transparent 0 22%, #000 23%),
+                      radial-gradient(circle at 70% 4%, transparent 0 14%, #000 15%);
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle at 90% 10%, transparent 0 22%, #000 23%),
+              radial-gradient(circle at 70% 4%, transparent 0 14%, #000 15%);
+  mask-composite: intersect;
+}
