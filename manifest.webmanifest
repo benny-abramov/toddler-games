@@ -1,0 +1,13 @@
+{
+  "name": "Toddler Games",
+  "short_name": "Toddler Games",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#fff7e0",
+  "theme_color": "#ffd166",
+  "icons": [
+    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

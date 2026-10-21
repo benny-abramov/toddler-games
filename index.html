@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#ffd166">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Toddler Games">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="images/cow.svg">
+  <link rel="apple-touch-icon" href="images/icon-180.png">
+  <title>Toddler Games</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Home: one big picture card per game -->
+  <section id="home" class="screen">
+    <h1>Toddler Games</h1>
+    <div class="games">
+      <a class="game-card" href="#animals">
+        <span class="game-pics">
+          <img src="images/cow.svg" alt="">
+          <img src="images/dog.svg" alt="">
+          <img src="images/cat.svg" alt="">
+          <img src="images/duck.svg" alt="">
+        </span>
+        <span class="game-name">Animals</span>
+      </a>
+    </div>
+    <footer><a href="CREDITS.md">Credits</a></footer>
+  </section>
+
+  <!-- Animals game -->
+  <section id="animals" class="screen" hidden>
+    <header class="bar">
+      <a class="home-btn" href="#" aria-label="Home"><img src="images/home.svg" alt=""></a>
+      <h2>Animals</h2>
+    </header>
+    <div id="animal-grid" class="animal-grid"></div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
