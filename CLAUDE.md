@@ -13,8 +13,8 @@ Static site of tap-and-listen games for toddlers. Plain HTML/CSS/JS, no build st
 
 ## Structure
 
-- `index.html`: one `<section class="screen">` per screen. Hash routing: `#` = home, `#animals`, `#colors`.
-- `app.js`: game data (`ANIMALS`, `COLORS`) plus the shared `makeTile()`. Odd taps call `first()`, even taps call `second()`; tapping a different tile resets the count.
+- `index.html`: one `<section class="screen">` per screen. Hash routing: `#` = home, `#animals`, `#colors`, `#numbers`.
+- `app.js`: game data (`ANIMALS`, `COLORS`, `NUMBERS`) plus the shared `makeTile()`. Odd taps call `first()`, even taps call `second()`; tapping a different tile resets the count. `sayEach()` speaks phrases in sequence; Numbers uses it to reveal pictures in time with the counting.
 - `style.css`: shared `.tile` / `.tile-grid` styles, plus per-game sections.
 - `images/`: Twemoji v15.1.0 SVGs from `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/<codepoint>.svg`.
 - `sounds/`: `<animal>.mp3`, short clips (≤5 s) from Wikimedia Commons, trimmed, peak-normalized to -1 dB, mono 96 kbps.

@@ -23,6 +23,21 @@ const COLORS = [
   ["gray",   "#9aa0a6", "elephant"],
 ];
 
+// Each number: tile color, image, and what to call that many of them
+const NUMBER_WORDS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+const NUMBERS = [
+  ["#ffadad", "elephant", "elephant"],
+  ["#ffd6a5", "dog", "dogs"],
+  ["#fdffb6", "duck", "ducks"],
+  ["#caffbf", "apple", "apples"],
+  ["#9bf6ff", "frog", "frogs"],
+  ["#a0c4ff", "flower", "flowers"],
+  ["#bdb2ff", "carrot", "carrots"],
+  ["#ffc6ff", "banana", "bananas"],
+  ["#ffd6a5", "chicken", "chickens"],
+  ["#a0c4ff", "star", "stars"],
+];
+
 // ---------- Speech ----------
 let voice = null;
 
@@ -40,15 +55,30 @@ if ("speechSynthesis" in window) {
   speechSynthesis.onvoiceschanged = pickVoice;
 }
 
-function say(text) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
+function utterance(text) {
   const u = new SpeechSynthesisUtterance(text);
   if (voice) u.voice = voice;
   u.lang = voice ? voice.lang : "en-US";
   u.rate = 0.8;
   u.pitch = 1.2;
-  speechSynthesis.speak(u);
+  return u;
+}
+
+function say(text) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance(text));
+}
+
+// Speak several phrases in a row; onStart(i) fires as phrase i begins
+function sayEach(texts, onStart) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  texts.forEach((t, i) => {
+    const u = utterance(t);
+    u.onstart = () => onStart(i);
+    speechSynthesis.speak(u);
+  });
 }
 
 // ---------- Sounds ----------
@@ -138,13 +168,54 @@ COLORS.forEach(([name, color, thing, image = thing]) => {
   });
 });
 
+// ---------- Numbers: number name, then count that many things ----------
+const numberGrid = document.getElementById("number-grid");
+let countTimers = [];
+
+// Stop any count in progress and turn every number tile back to its numeral
+function clearCount() {
+  countTimers.forEach(clearTimeout);
+  countTimers = [];
+  numberGrid.querySelectorAll(".counting").forEach(b => b.classList.remove("counting"));
+}
+
+NUMBERS.forEach(([color, image, plural], i) => {
+  const n = i + 1;
+  const word = NUMBER_WORDS[i];
+  const cols = n <= 3 ? n : n === 4 ? 2 : n <= 9 ? 3 : 4;
+  const items = Array.from({ length: n }, () => `<img src="images/${image}.svg" alt="">`).join("");
+  makeTile(numberGrid, {
+    id: "number-" + n,
+    color,
+    label: word,
+    html: `<span class="numeral">${n}</span><span class="things" style="--cols:${cols}">${items}</span>`,
+    first: () => {
+      clearCount();
+      stopAll();
+      say(word);
+    },
+    second: btn => {
+      clearCount();
+      stopAll();
+      const imgs = btn.querySelectorAll(".things img");
+      imgs.forEach(img => img.classList.remove("on"));
+      btn.classList.add("counting");
+      const show = k => { if (imgs[k]) imgs[k].classList.add("on"); };
+      // Reveal each picture as its number is spoken, with a timer as backup in case speech is unavailable
+      sayEach([...NUMBER_WORDS.slice(0, n), `${word} ${plural}!`], show);
+      for (let k = 0; k < n; k++) countTimers.push(setTimeout(() => show(k), 900 * k + 300));
+    },
+  });
+});
+
 // ---------- Routing (hash-based so the phone's back button works) ----------
 function route() {
   const screen = location.hash.slice(1) || "home";
   document.querySelectorAll(".screen").forEach(s => { s.hidden = s.id !== screen; });
   stopAll();
+  clearCount();
   lastTapped = null;
-  document.querySelectorAll(".tile").forEach(b => b.classList.remove("named", "show-thing"));
+  document.querySelectorAll(".tile").forEach(b => b.classList.remove("named", "show-thing", "counting"));
   window.scrollTo(0, 0);
 }
 

@@ -207,3 +207,45 @@ footer a { color: var(--text); opacity: 0.5; font-size: 0.9rem; }
   translate: -50% 0;
 }
 .tile[aria-label="white"] .thing { background: #9bf6ff; }
+
+/* ---------- Numbers ---------- */
+.numerals span {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  font-size: clamp(2.5rem, 12vw, 4rem);
+  font-weight: bold;
+}
+.game-pics.numerals { background: #fff7e0; }
+
+.numbers .tile.bounce { animation: bounce 0.5s ease; }
+.numbers .tile img { animation: none !important; }
+
+.numeral {
+  font-size: clamp(5rem, 22vw, 8rem);
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* The counted pictures replace the numeral on the second tap */
+.things {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 100%;
+}
+.things img {
+  width: calc(100% / var(--cols));
+  height: auto;
+  aspect-ratio: 1;
+  padding: 3%;
+  transform: scale(0);
+  transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.things img.on { transform: scale(1); }
+
+.tile.counting .numeral { display: none; }
+.tile.counting .things { display: flex; }

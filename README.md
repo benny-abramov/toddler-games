@@ -7,6 +7,7 @@ There's no build step: it's plain HTML, CSS and JavaScript.
 
 - **Animals**: scroll through farm and zoo animals. Tap an animal once to hear its name, and tap it again to hear the sound it makes.
 - **Colors**: big color tiles. Tap a tile once to hear the color name. Tap it again to see something of that color and hear it named, such as "red apple" or "blue whale".
+- **Numbers**: number tiles from 1 to 10. Tap a tile once to hear the number. Tap it again to see that many pictures appear one by one while they are counted aloud ("one, two, three... three ducks!").
 
 ## Run locally
 
